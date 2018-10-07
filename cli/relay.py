@@ -11,10 +11,10 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(SCRIPT_DIR)
 LOCAL_NODE_ADDRESS = "http://127.0.0.1:8545"
 IPC_FILEPATH = "/Users/zaver/Projects/hackaton/testnet1/chaindata/geth.ipc"
-KEYFILE = "/Users/zaver/Projects/hackaton/testnet1/chaindata/keystore/UTC--2018-10-07T10-10-13.185517678Z--b0484a665307a831d2753a5fe23ba2e042ae39bf"
+KEYFILE = "/Users/zaver/Projects/hackaton/testnet1/chaindata/keystore/UTC--2018-10-07T10-58-38.091696467Z--67592d918970f93bbbb43f64d5c6637a01f3164a"
 VOTING_CONTRACT = os.path.join(ROOT_DIR, 'contracts/Voting.sol')
-NOTARY_PK = '0xB0484a665307A831D2753a5fe23Ba2E042aE39bf'
-VOTING_CONTRACT_PK = '0x7bdb901b032e861e77a932c79ceb60667bc8660e'
+NOTARY_PK = '0x67592d918970F93bbBb43F64d5C6637A01F3164a'
+VOTING_CONTRACT_PK = '0xcc94be151fad285c93232bc0a0e4ba253643ea45'
 PASSPTHRASE = '123456789'
 CHAIN_ID = 15
 
@@ -58,4 +58,5 @@ if __name__ == "__main__":
         })
         signed_tx = w3.eth.account.signTransaction(tx, private_key=private_key)
         w3.eth.sendRawTransaction(signed_tx.rawTransaction)
+        prev_block_number = block.number
 
