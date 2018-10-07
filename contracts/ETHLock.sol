@@ -6,7 +6,10 @@ contract ERC721Receiver {
 }
 
 contract ETHLock is ERC721Receiver {
-    function onERC721Received(address, uint256, bytes) public returns(bytes4) {
+    event Locked(address owner, uint256 tokenId, uint256 data);
+
+    function onERC721Received(address owner, uint256 tokenId, uint256 data) public returns(bytes4) {
+        Locked(owner, tokenId, data);
         return ERC721_RECEIVED;
     }
 }

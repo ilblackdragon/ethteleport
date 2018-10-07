@@ -3,7 +3,7 @@ import chaiAsPromised from 'chai-as-promised'
 chai.use(chaiAsPromised)
 const { expect, assert } = chai
 
-var MinimalERC721 = artifacts.require("MinimalERC721");
+var ETHToken = artifacts.require("ETHToken");
 
 contract('Testing ERC721 contract', function(accounts) {
 
@@ -22,8 +22,8 @@ contract('Testing ERC721 contract', function(accounts) {
     const account3 = accounts[3]
 
     it(' should be able to deploy and mint ERC721 token', async () => {
-        token = await MinimalERC721.new(name, symbol)
-        await token.mintUniqueTokenTo(account1, tokenId1, tokenUri1, {from: accounts[0]})
+        token = await ETHToken.new(name, symbol)
+            await token.mintUniqueTokenTo(account1, tokenId1, tokenUri1, {from: accounts[0]})
 
         expect(await token.symbol()).to.equal(symbol)
         expect(await token.name()).to.equal(name)
