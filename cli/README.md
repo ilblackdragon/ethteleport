@@ -8,11 +8,12 @@ Make sure you are running Node.js 8:
 sudo n 8
 ```
 
-Install web3 and eth-proof packages globally:
+Install the following packages globally:
 ```
 npm install -g web3
 npm install -g eth-proof
 npm install -g bn.js
+npm install -g solc
 ```
 
 # Running minter

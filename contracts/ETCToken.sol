@@ -1,6 +1,7 @@
 pragma solidity ^0.4.23;
 
-import "../node_modules/zeppelin-solidity/contracts/token/ERC721/ERC721Token.sol";
+import "/Users/zaver/Projects/hackaton/testnet1/node_modules/zeppelin-solidity/contracts/token/ERC721/ERC721Token.sol";
+//import "../node_modules/zeppelin-solidity/contracts/token/ERC721/ERC721Token.sol";
 import "./MerklePatriciaProof.sol";
 import "./Voting.sol";
 

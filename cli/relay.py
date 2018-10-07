@@ -14,7 +14,7 @@ IPC_FILEPATH = "/Users/zaver/Projects/hackaton/testnet1/chaindata/geth.ipc"
 KEYFILE = "/Users/zaver/Projects/hackaton/testnet1/chaindata/keystore/UTC--2018-10-07T10-58-38.091696467Z--67592d918970f93bbbb43f64d5c6637a01f3164a"
 VOTING_CONTRACT = os.path.join(ROOT_DIR, 'contracts/Voting.sol')
 NOTARY_PK = '0x67592d918970F93bbBb43F64d5C6637A01F3164a'
-VOTING_CONTRACT_PK = '0xcc94be151fad285c93232bc0a0e4ba253643ea45'
+VOTING_CONTRACT_PK = '0xec21f4d1dd641acc23e09ac84323e4eaf25bb2c7'
 PASSPTHRASE = '123456789'
 CHAIN_ID = 15
 
@@ -59,4 +59,5 @@ if __name__ == "__main__":
         signed_tx = w3.eth.account.signTransaction(tx, private_key=private_key)
         w3.eth.sendRawTransaction(signed_tx.rawTransaction)
         prev_block_number = block.number
+        print("Posted block header", flush=True)
 

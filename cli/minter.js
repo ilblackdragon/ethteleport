@@ -21,14 +21,18 @@ web3ify = (input) => {
 };
 
 // Load contract ABI
+const ETCToken_artifiacts = require('./ETCToken.abi');
+const contract = require('truffle-contract');
+const contract_inst = contract(ETCToken_artifiacts);
+
 var fs = require('fs');
-var jsonFile = "./cli/erc721.abi.json";
+var jsonFile = "./cli/ETCToken.abi";
 var parsed = JSON.parse(fs.readFileSync(jsonFile));
 var abi = parsed.abi;
 
 // Get the transaction.
-var transaction = web3.eth.getTransaction('0xa601c63b2d2083e464640a201eec0f385cf832d48280c9325b3cccf0e7423fc4');
-//console.log(transaction);
+var transaction = web3.eth.getTransaction('0xdb9a752bac7c6d5c6506ed37326fff5c4e819b9b5cb0ec1bfd74d1516b7b8d31');
+console.log(transaction);
 
 
 var eP = new EP(new Web3.providers.HttpProvider("http://localhost:8545"));
@@ -36,10 +40,17 @@ eP.getTransactionProof(transaction.hash).then((proof)=>{
 //    console.log("TRANSACTION PROOF");
 //      console.log(proof);
     let wproof = web3ify(proof);
-    let blockHash = new BN(proof.blockHash).toString();
+    let blockHash = new BN(wproof.blockHash).toString();
     // TODO: Invoke ETCToken with wproof and blockhash.
+    //console.log(wproof.value);
+    //var ETCToken = web3.eth.contract(abi);
+    //console.log(ETCToken);
+    var ETCTokenInstance = contract_inst.at('0xcd94168e5f9f8d7d77813c01a36f8a2c0128e51d');
+    data = ETCTokenInstance.mint.getData(wproof.value, blockHash,
+                                        wproof.path, wproof.parentNodes);
     console.log(wproof.value);
-    // data = ETCToken.mint.getData(txProof.value, blockHash,
-    //                                 txProof.path, txProof.parentNodes)
-
     }).catch((e)=>{console.log(e)});
+
+
+// Command for generating ETCToken.abi:
+// solcjs --abi /Users/zaver/Projects/hackaton/testnet1/node_modules/zeppelin-solidity/contracts/token/ERC721/ERC721Token.sol MerklePatriciaProof.sol Voting.sol ETCToken.sol RLP.sol /Users/zaver/Projects/hackaton/testnet1/node_modules/zeppelin-solidity/contracts/token/ERC721/ERC721.sol /Users/zaver/Projects/hackaton/testnet1/node_modules/zeppelin-solidity/contracts/token/ERC721/ERC721BasicToken.sol /Users/zaver/Projects/hackaton/testnet1/node_modules/zeppelin-solidity/contracts/introspection/SupportsInterfaceWithLookup.sol /Users/zaver/Projects/hackaton/testnet1/node_modules/zeppelin-solidity/contracts/token/ERC721/ERC721Receiver.sol /Users/zaver/Projects/hackaton/testnet1/node_modules/zeppelin-solidity/contracts/math/SafeMath.sol /Users/zaver/Projects/hackaton/testnet1/node_modules/zeppelin-solidity/contracts/AddressUtils.sol
