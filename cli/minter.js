@@ -21,18 +21,22 @@ web3ify = (input) => {
 };
 
 // Load contract ABI
-const ETCToken_artifiacts = require('./ETCToken.abi');
-const contract = require('truffle-contract');
-const contract_inst = contract(ETCToken_artifiacts);
+//const ETCToken_artifiacts = require('./ETCToken.abi');
+//const contract = require('truffle-contract');
+//const contract_inst = contract(ETCToken_artifiacts);
+//console.log(contract_inst)
 
 var fs = require('fs');
 var jsonFile = "./cli/ETCToken.abi";
 var parsed = JSON.parse(fs.readFileSync(jsonFile));
+for (var i = 0; i < parsed.length; ++i) {
+    console.log(parsed[i].name)
+}
 var abi = parsed.abi;
 
 // Get the transaction.
 var transaction = web3.eth.getTransaction('0xdb9a752bac7c6d5c6506ed37326fff5c4e819b9b5cb0ec1bfd74d1516b7b8d31');
-console.log(transaction);
+//console.log(transaction);
 
 
 var eP = new EP(new Web3.providers.HttpProvider("http://localhost:8545"));
@@ -43,13 +47,17 @@ eP.getTransactionProof(transaction.hash).then((proof)=>{
     let blockHash = new BN(wproof.blockHash).toString();
     // TODO: Invoke ETCToken with wproof and blockhash.
     //console.log(wproof.value);
+    var ETCTokenInstance = web3.eth.contract(parsed.abi, '0xcd94168e5f9f8d7d77813c01a36f8a2c0128e51d')
     //var ETCToken = web3.eth.contract(abi);
+    //var ETCTokenInstance = ETCToken.at('0xcd94168e5f9f8d7d77813c01a36f8a2c0128e51d')
     //console.log(ETCToken);
-    var ETCTokenInstance = contract_inst.at('0xcd94168e5f9f8d7d77813c01a36f8a2c0128e51d');
-    data = ETCTokenInstance.mint.getData(wproof.value, blockHash,
+//    var ETCTokenInstance = contract_inst.at('0xcd94168e5f9f8d7d77813c01a36f8a2c0128e51d');
+    data = ETCTokenInstance.mintUniqueTokenTo(wproof.value, blockHash,
                                         wproof.path, wproof.parentNodes);
-    console.log(wproof.value);
-    }).catch((e)=>{console.log(e)});
+//    console.log(wproof.value);
+    }).catch((e)=>{
+       console.log(e)
+    });
 
 
 // Command for generating ETCToken.abi:
