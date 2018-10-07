@@ -1,6 +1,9 @@
 pragma solidity ^0.4.22;
 
 contract Voting {
+    // Number of blocks to challenge this block (10 minutes, 5 blocks per minute)
+    uint constant private NUM_BLOCKS_TO_LOCK = 10 * 5;
+
     struct Stake {
         address staker;
         uint256 stake;
@@ -16,6 +19,7 @@ contract Voting {
 
     struct MultiValue {
         uint startingBlockIndex;
+        uint lockingBlockIndex;
         bool isLocked;
         uint topValueId;
         uint numValues;
@@ -27,13 +31,32 @@ contract Voting {
     mapping (string => MultiValue) private store;
 
 
-    function put(string _key, string _value) public payable {
-        require(msg.value > 0, "You need to stake money bro");
-        // require(_key.length > 0, "Key can't be empty string");
+    function lockMultiValue(MultiValue storage multiValue) private {
+        multiValue.isLocked = true;
+        // TODO: Distribute stake
+    }
+
+    function getMultiValue(string _key) private returns (MultiValue storage) {
         MultiValue storage multiValue = store[_key];
         if (multiValue.numValues == 0) {
             // new key
+            return multiValue;
+        }
+        if (block.number >= multiValue.lockingBlockIndex) {
+            lockMultiValue(multiValue);
+        }
+        return multiValue;
+    }
+
+    function put(string _key, string _value) public payable returns (bool) {
+        require(msg.value > 0, "You need to stake money bro");
+        // require(_key.length > 0, "Key can't be empty string");
+        MultiValue storage multiValue = getMultiValue(_key);
+        require(!multiValue.isLocked, "Can't use put on the locked key");
+        if (multiValue.numValues == 0) {
+            // new key
             multiValue.startingBlockIndex = block.number;
+            multiValue.lockingBlockIndex = block.number + NUM_BLOCKS_TO_LOCK;
         }
         uint valueId = multiValue.ids[_value];
         if (valueId == 0) {
@@ -51,20 +74,23 @@ contract Voting {
             value.stakes[stakeId].staker = msg.sender;
         }
         value.stakes[stakeId].stake += msg.value;
-        // multiValue.values[_value] = value;
 
         if (value.totalStake > multiValue.values[multiValue.topValueId].totalStake) {
             multiValue.topValueId = valueId;
         }
-        // store[_key] = multiValue;
+
+        return true;
     }
 
-    function get(string _key) public view returns (string value, bool isLocked) {
+    function get(string _key) public returns (string value, bool isLocked) {
         // TODO: Figure out fees split
-        MultiValue storage multiValue = store[_key];
-        if (multiValue.numValues == 0) {
-            return ("", false);
+        MultiValue storage multiValue = getMultiValue(_key);
+        if (multiValue.numValues > 0) {
+            value = multiValue.values[multiValue.topValueId].value;
+            isLocked = multiValue.isLocked;
         }
-        return (multiValue.values[multiValue.topValueId].value, multiValue.isLocked);
+        emit GetEvent(_key, value, isLocked);
     }
+
+    event GetEvent(string key, string value, bool isLocked);
 }
