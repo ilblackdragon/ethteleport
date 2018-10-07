@@ -1,2 +1,2 @@
-
-git+https://github.com/ilblackdragon/ethjsonrpc.git
+web3
+py-solc

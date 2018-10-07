@@ -13,17 +13,17 @@ contract Voting {
         string value;
         uint totalStake;
         uint numStakes;
-        mapping (address => uint) ids;
-        mapping (uint => Stake) stakes;
+        mapping (address => uint) ids;  // Sender address -> stakeId
+        mapping (uint => Stake) stakes;  // stakeId -> Sender address, total staked
     }
 
     struct MultiValue {
         uint startingBlockIndex;
         uint lockingBlockIndex;
         bool isLocked;
-        uint topValueId;
+        uint topValueId;  // Id of top value.
         uint numValues;
-        mapping (string => uint) ids;
+        mapping (string => uint) ids;  // value to valueId
         mapping (uint => Value) values;
     }
 
